@@ -13,3 +13,9 @@ find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets)
 qt_standard_project_setup()
 
 add_subdirectory(src)
+
+option(BUILD_TESTS "Build unit test" ON)
+if(BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif()
