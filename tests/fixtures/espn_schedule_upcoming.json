@@ -1,0 +1,92 @@
+{
+  "events": [
+    {
+      "id": "401882848",
+      "date": "2026-10-10T19:00Z",
+      "name": "Villarreal at Real Madrid",
+      "season": {
+        "year": 2026,
+        "displayName": "2026-27 Spanish LALIGA"
+      },
+      "competitions": [
+        {
+          "id": "401882848",
+          "date": "2026-10-10T19:00Z",
+          "status": {
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sat, October 10th at 3:00 PM EDT",
+              "shortDetail": "10/10 - 3:00 PM EDT"
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "score": null,
+              "team": {
+                "id": "86",
+                "displayName": "Real Madrid"
+              }
+            },
+            {
+              "homeAway": "away",
+              "score": null,
+              "team": {
+                "id": "102",
+                "displayName": "Villarreal"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "401882839",
+      "date": "2026-10-18T19:00Z",
+      "name": "Sevilla at Real Madrid",
+      "season": {
+        "year": 2026,
+        "displayName": "2026-27 Spanish LALIGA"
+      },
+      "competitions": [
+        {
+          "id": "401882839",
+          "date": "2026-10-18T19:00Z",
+          "status": {
+            "type": {
+              "id": "1",
+              "name": "STATUS_SCHEDULED",
+              "state": "pre",
+              "completed": false,
+              "description": "Scheduled",
+              "detail": "Sun, October 18th at 3:00 PM EDT",
+              "shortDetail": "10/18 - 3:00 PM EDT"
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "score": null,
+              "team": {
+                "id": "86",
+                "displayName": "Real Madrid"
+              }
+            },
+            {
+              "homeAway": "away",
+              "score": null,
+              "team": {
+                "id": "243",
+                "displayName": "Sevilla"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

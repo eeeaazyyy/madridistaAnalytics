@@ -1,0 +1,188 @@
+{
+  "header": {
+    "id": "748418",
+    "competitions": [
+      {
+        "date": "2026-03-14T20:00Z",
+        "status": {
+          "type": {
+            "id": "28",
+            "name": "STATUS_FULL_TIME",
+            "state": "post",
+            "completed": true,
+            "description": "Full Time",
+            "detail": "FT",
+            "shortDetail": "FT"
+          }
+        },
+        "competitors": [
+          {
+            "homeAway": "home",
+            "score": "4",
+            "team": {
+              "id": "86",
+              "displayName": "Real Madrid"
+            }
+          },
+          {
+            "homeAway": "away",
+            "score": "1",
+            "team": {
+              "id": "3751",
+              "displayName": "Elche"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "keyEvents": [
+    {
+      "type": {
+        "id": "173",
+        "text": "Goal - Volley",
+        "type": "goal---volley"
+      },
+      "clock": {
+        "value": 2317.0,
+        "displayValue": "39'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "169438",
+            "displayName": "Antonio Rüdiger"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "clock": {
+        "value": 2638.0,
+        "displayValue": "44'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "235818",
+            "displayName": "Federico Valverde"
+          }
+        },
+        {
+          "athlete": {
+            "id": "213050",
+            "displayName": "Fran García"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "137",
+        "text": "Goal - Header",
+        "type": "goal---header"
+      },
+      "clock": {
+        "value": 3948.0,
+        "displayValue": "66'"
+      },
+      "period": {
+        "number": 2
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "356000",
+            "displayName": "Dean Huijsen"
+          }
+        },
+        {
+          "athlete": {
+            "id": "376422",
+            "displayName": "Daniel Yañez"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "97",
+        "text": "Own Goal",
+        "type": "own-goal"
+      },
+      "clock": {
+        "value": 5063.0,
+        "displayValue": "85'"
+      },
+      "period": {
+        "number": 2
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "3751",
+        "displayName": "Elche"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "364812",
+            "displayName": "Manuel Ángel"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "clock": {
+        "value": 5321.0,
+        "displayValue": "89'"
+      },
+      "period": {
+        "number": 2
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "310452",
+            "displayName": "Arda Güler"
+          }
+        }
+      ]
+    }
+  ]
+}

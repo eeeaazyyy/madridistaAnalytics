@@ -1,0 +1,154 @@
+{
+  "events": [
+    {
+      "id": "401882865",
+      "date": "2026-09-20T14:15Z",
+      "name": "Real Madrid at Atlético Madrid",
+      "season": {
+        "year": 2026,
+        "displayName": "2026-27 Spanish LALIGA"
+      },
+      "competitions": [
+        {
+          "id": "401882865",
+          "date": "2026-09-20T14:15Z",
+          "status": {
+            "type": {
+              "id": "28",
+              "name": "STATUS_FULL_TIME",
+              "state": "post",
+              "completed": true,
+              "description": "Full Time",
+              "detail": "FT",
+              "shortDetail": "FT"
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "score": {
+                "value": 2.0,
+                "displayValue": "2"
+              },
+              "team": {
+                "id": "1068",
+                "displayName": "Atlético Madrid"
+              }
+            },
+            {
+              "homeAway": "away",
+              "score": {
+                "value": 1.0,
+                "displayValue": "1"
+              },
+              "team": {
+                "id": "86",
+                "displayName": "Real Madrid"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "401882872",
+      "date": "2026-09-15T19:30Z",
+      "name": "Real Madrid at Elche",
+      "season": {
+        "year": 2026,
+        "displayName": "2026-27 Spanish LALIGA"
+      },
+      "competitions": [
+        {
+          "id": "401882872",
+          "date": "2026-09-15T19:30Z",
+          "status": {
+            "type": {
+              "id": "28",
+              "name": "STATUS_FULL_TIME",
+              "state": "post",
+              "completed": true,
+              "description": "Full Time",
+              "detail": "FT",
+              "shortDetail": "FT"
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "score": {
+                "value": 2.0,
+                "displayValue": "2"
+              },
+              "team": {
+                "id": "3751",
+                "displayName": "Elche"
+              }
+            },
+            {
+              "homeAway": "away",
+              "score": {
+                "value": 3.0,
+                "displayValue": "3"
+              },
+              "team": {
+                "id": "86",
+                "displayName": "Real Madrid"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "401882880",
+      "date": "2026-09-12T19:00Z",
+      "name": "Rayo Vallecano at Real Madrid",
+      "season": {
+        "year": 2026,
+        "displayName": "2026-27 Spanish LALIGA"
+      },
+      "competitions": [
+        {
+          "id": "401882880",
+          "date": "2026-09-12T19:00Z",
+          "status": {
+            "type": {
+              "id": "28",
+              "name": "STATUS_FULL_TIME",
+              "state": "post",
+              "completed": true,
+              "description": "Full Time",
+              "detail": "FT",
+              "shortDetail": "FT"
+            }
+          },
+          "competitors": [
+            {
+              "homeAway": "home",
+              "score": {
+                "value": 4.0,
+                "displayValue": "4"
+              },
+              "team": {
+                "id": "86",
+                "displayName": "Real Madrid"
+              }
+            },
+            {
+              "homeAway": "away",
+              "score": {
+                "value": 1.0,
+                "displayValue": "1"
+              },
+              "team": {
+                "id": "101",
+                "displayName": "Rayo Vallecano"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
