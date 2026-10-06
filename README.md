@@ -1,6 +1,6 @@
 # Madridista Analytics
 
-![CI](https://github.com/eeeaazyyy/madridistaAnalytics/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/eeeaazyyy/madridistaAnalytics/actions/workflows/ci.yml/badge.svg?branch=main)
 
 A desktop application with Real Madrid match statistics and predictions, built with Qt 6 and C++23.
 
