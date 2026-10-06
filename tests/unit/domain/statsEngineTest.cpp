@@ -28,7 +28,7 @@ model::Match finishedMatch(std::int64_t homeId, std::int64_t awayId,
 }
 
 //Schedule Match
-model::Match scheduleMatch(std::int64_t homeId, std::int64_t awayId) {
+model::Match scheduledMatch(std::int64_t homeId, std::int64_t awayId) {
     return model::Match::create({
         .id = model::MatchId{999},
         .kickoff = std::chrono::sys_days{std::chrono::year{2026}/10/25},
@@ -57,3 +57,23 @@ TEST(StatsEngineTest, CountGoalsAtHomeAndAway) {
     EXPECT_EQ(stats::totalGoalsScored(idRealMadrid, matches), 6);
 }
 
+TEST(StatsEngineTest, IgnoresMatchesOfOtherTeams) {
+    const std::vector matches = {
+        finishedMatch(541, 798, 2, 1),
+        finishedMatch(529, 530, 4, 4),
+    };
+    EXPECT_EQ(stats::totalGoalsScored(idRealMadrid, matches), 2);
+}
+
+TEST(StatsEngineTest, GoallessDrawGivesZero) {
+    const std::vector matches = {finishedMatch(541, 798, 0, 0)};
+    EXPECT_EQ(stats::totalGoalsScored(idRealMadrid, matches), 0);
+}
+
+TEST(StatsEngineTest, IgnoresMatchesWithoutScore) {
+    const std::vector matches = {
+        finishedMatch(541, 798, 2, 1),
+        scheduledMatch(541, 529),
+    };
+    EXPECT_EQ(stats::totalGoalsScored(idRealMadrid, matches), 2);
+}
