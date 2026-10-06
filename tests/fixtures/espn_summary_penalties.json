@@ -1,0 +1,188 @@
+{
+  "header": {
+    "id": "748383",
+    "competitions": [
+      {
+        "date": "2026-02-14T20:00Z",
+        "status": {
+          "type": {
+            "id": "28",
+            "name": "STATUS_FULL_TIME",
+            "state": "post",
+            "completed": true,
+            "description": "Full Time",
+            "detail": "FT",
+            "shortDetail": "FT"
+          }
+        },
+        "competitors": [
+          {
+            "homeAway": "home",
+            "score": "4",
+            "team": {
+              "id": "86",
+              "displayName": "Real Madrid"
+            }
+          },
+          {
+            "homeAway": "away",
+            "score": "1",
+            "team": {
+              "id": "89",
+              "displayName": "Real Sociedad"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "keyEvents": [
+    {
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "clock": {
+        "value": 263.0,
+        "displayValue": "5'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "87297",
+            "displayName": "Gonzalo García"
+          }
+        },
+        {
+          "athlete": {
+            "id": "223532",
+            "displayName": "Trent Alexander-Arnold"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "98",
+        "text": "Penalty - Scored",
+        "type": "penalty---scored"
+      },
+      "clock": {
+        "value": 1246.0,
+        "displayValue": "21'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "89",
+        "displayName": "Real Sociedad"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "229018",
+            "displayName": "Mikel Oyarzabal"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "98",
+        "text": "Penalty - Scored",
+        "type": "penalty---scored"
+      },
+      "clock": {
+        "value": 1481.0,
+        "displayValue": "25'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "252107",
+            "displayName": "Vinícius Júnior"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "clock": {
+        "value": 1816.0,
+        "displayValue": "31'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "235818",
+            "displayName": "Federico Valverde"
+          }
+        },
+        {
+          "athlete": {
+            "id": "310637",
+            "displayName": "Álvaro Carreras"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "98",
+        "text": "Penalty - Scored",
+        "type": "penalty---scored"
+      },
+      "clock": {
+        "value": 2837.0,
+        "displayValue": "48'"
+      },
+      "period": {
+        "number": 2
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "252107",
+            "displayName": "Vinícius Júnior"
+          }
+        }
+      ]
+    }
+  ]
+}

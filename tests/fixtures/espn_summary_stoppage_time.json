@@ -1,0 +1,239 @@
+{
+  "header": {
+    "id": "748514",
+    "competitions": [
+      {
+        "date": "2026-05-23T19:00Z",
+        "status": {
+          "type": {
+            "id": "28",
+            "name": "STATUS_FULL_TIME",
+            "state": "post",
+            "completed": true,
+            "description": "Full Time",
+            "detail": "FT",
+            "shortDetail": "FT"
+          }
+        },
+        "competitors": [
+          {
+            "homeAway": "home",
+            "score": "4",
+            "team": {
+              "id": "86",
+              "displayName": "Real Madrid"
+            }
+          },
+          {
+            "homeAway": "away",
+            "score": "2",
+            "team": {
+              "id": "93",
+              "displayName": "Athletic Club"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "keyEvents": [
+    {
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "clock": {
+        "value": 715.0,
+        "displayValue": "12'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "87297",
+            "displayName": "Gonzalo García"
+          }
+        },
+        {
+          "athlete": {
+            "id": "168531",
+            "displayName": "Dani Carvajal"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "173",
+        "text": "Goal - Volley",
+        "type": "goal---volley"
+      },
+      "clock": {
+        "value": 2405.0,
+        "displayValue": "41'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "291281",
+            "displayName": "Jude Bellingham"
+          }
+        },
+        {
+          "athlete": {
+            "id": "409019",
+            "displayName": "Thiago Pitarch"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "173",
+        "text": "Goal - Volley",
+        "type": "goal---volley"
+      },
+      "clock": {
+        "value": 2700.0,
+        "displayValue": "45'+1'"
+      },
+      "period": {
+        "number": 1
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "93",
+        "displayName": "Athletic Club"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "231905",
+            "displayName": "Gorka Guruzeta"
+          }
+        },
+        {
+          "athlete": {
+            "id": "214412",
+            "displayName": "Iñaki Williams"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "clock": {
+        "value": 3026.0,
+        "displayValue": "51'"
+      },
+      "period": {
+        "number": 2
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "231388",
+            "displayName": "Kylian Mbappé"
+          }
+        },
+        {
+          "athlete": {
+            "id": "310637",
+            "displayName": "Álvaro Carreras"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "70",
+        "text": "Goal",
+        "type": "goal"
+      },
+      "clock": {
+        "value": 5276.0,
+        "displayValue": "88'"
+      },
+      "period": {
+        "number": 2
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "86",
+        "displayName": "Real Madrid"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "246532",
+            "displayName": "Brahim Díaz"
+          }
+        },
+        {
+          "athlete": {
+            "id": "409019",
+            "displayName": "Thiago Pitarch"
+          }
+        }
+      ]
+    },
+    {
+      "type": {
+        "id": "137",
+        "text": "Goal - Header",
+        "type": "goal---header"
+      },
+      "clock": {
+        "value": 5400.0,
+        "displayValue": "90'+1'"
+      },
+      "period": {
+        "number": 2
+      },
+      "scoringPlay": true,
+      "team": {
+        "id": "93",
+        "displayName": "Athletic Club"
+      },
+      "participants": [
+        {
+          "athlete": {
+            "id": "354205",
+            "displayName": "Urko Izeta"
+          }
+        },
+        {
+          "athlete": {
+            "id": "214412",
+            "displayName": "Iñaki Williams"
+          }
+        }
+      ]
+    }
+  ]
+}
