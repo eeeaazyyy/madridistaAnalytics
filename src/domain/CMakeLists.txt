@@ -1,6 +1,7 @@
 add_library(domain STATIC
     model/match.hpp
     model/match.cpp
+    model/goalEvent.hpp
     stats/statsEngine.hpp
     stats/statsEngine.cpp
 )
