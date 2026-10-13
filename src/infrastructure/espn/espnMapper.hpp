@@ -6,6 +6,8 @@
 
 #include <QByteArray>
 
+#include "domain/error.hpp"
+
 #include "domain/model/goalEvent.hpp"
 #include "domain/model/match.hpp"
 
