@@ -159,24 +159,35 @@ parseEvent(const QJsonObject& event, domain::model::CompetitionId competition) {
     });
 }
 
-} // namespace
-
-std::expected<std::vector<domain::model::Match>, domain::Error>
-parseSchedule(const QByteArray& json, domain::model::CompetitionId competition) {
+std::expected<QJsonObject, domain::Error> parseRoot(const QByteArray& json) {
     QJsonParseError parseError;
     const QJsonDocument document = QJsonDocument::fromJson(json, &parseError);
     if (parseError.error != QJsonParseError::NoError || !document.isObject()) {
         return std::unexpected(
-            domain::Error{domain::ErrorCode::InvalidResponse, "schedule is not a JSON object"});
+            domain::Error{domain::ErrorCode::InvalidResponse, "response is not a JSON object"});
     }
 
-    const QJsonObject root = document.object();
-    if (root.contains("code") && !root.contains("events")) {
+    QJsonObject root = document.object();
+    if (root["code"].isDouble() && root.contains("message")) {
         const auto code = root["code"].toInt() == kNotFoundCode
                               ? domain::ErrorCode::NotFound
                               : domain::ErrorCode::InvalidResponse;
         return std::unexpected(domain::Error{code, root["message"].toString().toStdString()});
     }
+
+    return root;
+}
+
+} // namespace
+
+std::expected<std::vector<domain::model::Match>, domain::Error>
+parseSchedule(const QByteArray& json, domain::model::CompetitionId competition) {
+    const auto parsedRoot = parseRoot(json);
+    if (!parsedRoot) {
+        return std::unexpected(parsedRoot.error());
+    }
+
+    const QJsonObject& root = *parsedRoot;
 
     if (!root["events"].isArray()) {
         return std::unexpected(
