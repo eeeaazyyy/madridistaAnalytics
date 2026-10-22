@@ -18,6 +18,7 @@ include(GoogleTest)
 
 add_executable(domain_tests
     unit/domain/statsEngineTest.cpp
+    unit/domain/seasonTest.cpp
     unit/domain/matchTest.cpp
 )
 
