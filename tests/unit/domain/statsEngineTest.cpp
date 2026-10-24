@@ -225,3 +225,102 @@ TEST(MatchesQueryTest, SeasonFilterAcceptsOnlyListedSeasons) {
     EXPECT_TRUE(stats::matchesQuery(matchOn(541, 798, kLaLiga, kSeptember2026), filter));
     EXPECT_FALSE(stats::matchesQuery(matchOn(541, 798, kLaLiga, march2026), filter));
 }
+
+// ---------- selectMatches ----------
+
+namespace {
+
+std::chrono::sys_days dayOf(int y, unsigned m, unsigned d) {
+    return std::chrono::sys_days{std::chrono::year{y} / std::chrono::month{m} /
+                                 std::chrono::day{d}};
+}
+
+} // namespace
+
+TEST(SelectMatchesTest, KeepsOnlyMatchesThatPassTheFilter) {
+    const std::vector matches = {
+        matchOn(541, 798, kLaLiga, dayOf(2026, 9, 1)),          // Real at home
+        matchOn(529, 530, kLaLiga, dayOf(2026, 9, 2)),          // other teams
+        matchOn(798, 541, kChampionsLeague, dayOf(2026, 9, 3)), // Real away
+    };
+    const stats::MatchFilter filter{.team = idRealMadrid};
+
+    const auto selected = stats::selectMatches(filter, matches);
+
+    ASSERT_EQ(selected.size(), 2u);
+    EXPECT_EQ(selected[0], matches[2].id()); // newest first
+    EXPECT_EQ(selected[1], matches[0].id());
+}
+
+TEST(SelectMatchesTest, ReturnsNewestMatchesFirst) {
+    const std::vector matches = {
+        matchOn(541, 798, kLaLiga, dayOf(2026, 9, 20)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 16)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 10, 4)),
+    };
+    const stats::MatchFilter filter{.team = idRealMadrid};
+
+    const auto selected = stats::selectMatches(filter, matches);
+
+    ASSERT_EQ(selected.size(), 3u);
+    EXPECT_EQ(selected[0], matches[2].id()); // 4 October
+    EXPECT_EQ(selected[1], matches[0].id()); // 20 September
+    EXPECT_EQ(selected[2], matches[1].id()); // 16 August
+}
+
+TEST(SelectMatchesTest, LastNKeepsOnlyMostRecentMatches) {
+    const std::vector matches = {
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 16)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 23)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 30)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 9, 6)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 9, 13)),
+    };
+    const stats::MatchFilter filter{.team = idRealMadrid, .lastN = 2};
+
+    const auto selected = stats::selectMatches(filter, matches);
+
+    ASSERT_EQ(selected.size(), 2u);
+    EXPECT_EQ(selected[0], matches[4].id());
+    EXPECT_EQ(selected[1], matches[3].id());
+}
+
+TEST(SelectMatchesTest, LastNLargerThanMatchCountReturnsAll) {
+    const std::vector matches = {
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 16)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 23)),
+    };
+    const stats::MatchFilter filter{.team = idRealMadrid, .lastN = 10};
+
+    EXPECT_EQ(stats::selectMatches(filter, matches).size(), 2u);
+}
+
+TEST(SelectMatchesTest, LastNCountsOnlyFilteredMatches) {
+    // The two newest matches are in the Champions League; lastN applies after the competition
+    // filter
+    const std::vector matches = {
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 16)),
+        matchOn(541, 798, kLaLiga, dayOf(2026, 8, 23)),
+        matchOn(541, 798, kChampionsLeague, dayOf(2026, 9, 16)),
+        matchOn(541, 798, kChampionsLeague, dayOf(2026, 9, 30)),
+    };
+    const stats::MatchFilter filter{.team = idRealMadrid, .competition = kLaLiga, .lastN = 1};
+
+    const auto selected = stats::selectMatches(filter, matches);
+
+    ASSERT_EQ(selected.size(), 1u);
+    EXPECT_EQ(selected[0], matches[1].id()); // newest La Liga match, not a Champions League one
+}
+
+TEST(SelectMatchesTest, NoMatchesGiveEmptyResult) {
+    const stats::MatchFilter filter{.team = idRealMadrid, .lastN = 5};
+
+    EXPECT_TRUE(stats::selectMatches(filter, {}).empty());
+}
+
+TEST(SelectMatchesTest, NonPositiveLastNSelectsNothing) {
+    const std::vector matches = {matchOn(541, 798, kLaLiga, dayOf(2026, 8, 16))};
+
+    EXPECT_TRUE(stats::selectMatches({.team = idRealMadrid, .lastN = 0}, matches).empty());
+    EXPECT_TRUE(stats::selectMatches({.team = idRealMadrid, .lastN = -3}, matches).empty());
+}

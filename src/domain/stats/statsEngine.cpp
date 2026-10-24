@@ -1,11 +1,11 @@
 #include "domain/stats/statsEngine.hpp"
 
 #include <algorithm>
+#include <chrono>
+#include <cstddef>
 #include <functional>
 #include <ranges>
 #include <vector>
-
-#include <chrono>
 
 namespace madridista { namespace domain { namespace stats {
 
@@ -95,6 +95,33 @@ bool matchesQuery(const model::Match& match, const MatchFilter& filter) {
     }
 
     return true;
+}
+
+std::vector<model::MatchId> selectMatches(const MatchFilter& filter,
+                                          std::span<const model::Match> matches) {
+    std::vector<const model::Match*> selected;
+    for (const model::Match& match : matches) {
+        if (matchesQuery(match, filter)) {
+            selected.push_back(&match);
+        }
+    }
+
+    std::ranges::sort(selected, std::ranges::greater{}, &model::Match::kickoff);
+
+    if (filter.lastN) {
+        const auto limit = static_cast<std::size_t>(std::max(*filter.lastN, 0));
+        if (limit < selected.size()) {
+            selected.resize(limit);
+        }
+    }
+
+    std::vector<model::MatchId> ids;
+    ids.reserve(selected.size());
+    for (const model::Match* match : selected) {
+        ids.push_back(match->id());
+    }
+
+    return ids;
 }
 
 }}} // namespace madridista::domain::stats
