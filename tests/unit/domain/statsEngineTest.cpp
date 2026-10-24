@@ -2,8 +2,10 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
 #include <chrono>
 #include <cstdint>
+#include <optional>
 #include <vector>
 
 using namespace madridista::domain;
@@ -11,8 +13,6 @@ using namespace madridista::domain;
 namespace {
 
 constexpr model::TeamId idRealMadrid{541};
-
-constexpr int kRegularTimeBuckets = 6; // 0–15, 16–30, 31–45+, 46–60, 61–75, 76–90+
 
 // Finished match with score
 model::Match finishedMatch(std::int64_t homeId, std::int64_t awayId, int homeGoals, int awayGoals) {
@@ -148,7 +148,7 @@ TEST(BucketOfTest, BucketIsAlwaysInsideRegularTimeRange) {
         const auto bucket = stats::bucketOf(goalAt(period, seconds{second}));
         ASSERT_TRUE(bucket.has_value());
         EXPECT_GE(*bucket, 0);
-        EXPECT_LT(*bucket, kRegularTimeBuckets);
+        EXPECT_LT(*bucket, stats::kRegularTimeBuckets);
     }
 }
 
@@ -323,4 +323,175 @@ TEST(SelectMatchesTest, NonPositiveLastNSelectsNothing) {
 
     EXPECT_TRUE(stats::selectMatches({.team = idRealMadrid, .lastN = 0}, matches).empty());
     EXPECT_TRUE(stats::selectMatches({.team = idRealMadrid, .lastN = -3}, matches).empty());
+}
+
+// ---------- computeGoalStats ----------
+
+namespace {
+
+constexpr model::PlayerId kGuler{380286};
+constexpr model::PlayerId kBellingham{291281};
+
+// Goal in a concrete match: team it is credited to, period and second of the match clock
+model::GoalEvent goalIn(const model::Match& match, model::TeamId team, model::Period period,
+                        std::chrono::seconds clock,
+                        std::optional<model::PlayerId> scorer = std::nullopt,
+                        model::GoalType type = model::GoalType::Regular) {
+    std::optional<model::Player> player;
+    if (scorer) {
+        player = model::Player{*scorer, ""};
+    }
+    return {
+        .match = match.id(),
+        .team = team,
+        .period = period,
+        .clock = clock,
+        .addedTime = std::chrono::minutes{0},
+        .type = type,
+        .scorer = player,
+    };
+}
+
+constexpr model::TeamId kAthletic{93};
+
+} // namespace
+
+TEST(ComputeGoalStatsTest, NoMatchesGiveZeroes) {
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid}};
+
+    const auto result = stats::computeGoalStats(query, {}, {});
+
+    EXPECT_EQ(result, stats::StatsResult{});
+}
+
+TEST(ComputeGoalStatsTest, CountsGoalsByBucketsAndHalves) {
+    const std::vector matches = {matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20))};
+    const std::vector goals = {
+        goalIn(matches[0], idRealMadrid, model::Period::FirstHalf, seconds{536}),   // 9'    -> 0
+        goalIn(matches[0], idRealMadrid, model::Period::FirstHalf, seconds{2700}),  // 45'+1 -> 2
+        goalIn(matches[0], idRealMadrid, model::Period::SecondHalf, seconds{3000}), // 51'   -> 3
+        goalIn(matches[0], idRealMadrid, model::Period::SecondHalf, seconds{5400}), // 90'+3 -> 5
+    };
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid}};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.matchCount, 1);
+    EXPECT_EQ(result.buckets, (std::array{1, 0, 1, 1, 0, 1}));
+    EXPECT_EQ(result.halves, (std::array{2, 2}));
+}
+
+TEST(ComputeGoalStatsTest, ScoredIgnoresOpponentGoals) {
+    const std::vector matches = {matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20))};
+    const std::vector goals = {
+        goalIn(matches[0], idRealMadrid, model::Period::FirstHalf, seconds{536}),
+        goalIn(matches[0], kAthletic, model::Period::FirstHalf, seconds{1200}),
+    };
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid}};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.buckets, (std::array{1, 0, 0, 0, 0, 0}));
+}
+
+TEST(ComputeGoalStatsTest, ConcededCountsOnlyOpponentGoals) {
+    const std::vector matches = {matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20))};
+    const std::vector goals = {
+        goalIn(matches[0], idRealMadrid, model::Period::FirstHalf, seconds{536}),
+        goalIn(matches[0], kAthletic, model::Period::FirstHalf, seconds{1200}), // 21' -> 1
+    };
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid},
+                                          .metric = stats::Metric::GoalsConceded};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.buckets, (std::array{0, 1, 0, 0, 0, 0}));
+}
+
+TEST(ComputeGoalStatsTest, OpponentOwnGoalCountsAsScored) {
+    // ESPN credits an own goal to the benefiting team
+    const std::vector matches = {matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20))};
+    const std::vector goals = {goalIn(matches[0], idRealMadrid, model::Period::SecondHalf,
+                                      seconds{4000}, std::nullopt, model::GoalType::OwnGoal)};
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid}};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.halves, (std::array{0, 1}));
+}
+
+TEST(ComputeGoalStatsTest, IgnoresGoalsOfMatchesOutsideTheFilter) {
+    const std::vector matches = {
+        matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20)),
+        matchOn(541, 93, kChampionsLeague, dayOf(2026, 9, 30)),
+    };
+    const std::vector goals = {
+        goalIn(matches[0], idRealMadrid, model::Period::FirstHalf, seconds{536}),
+        goalIn(matches[1], idRealMadrid, model::Period::FirstHalf, seconds{536}),
+    };
+    const stats::GoalsByMinuteQuery query{
+        .matches = {.team = idRealMadrid, .competition = kLaLiga}};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.matchCount, 1);
+    EXPECT_EQ(result.buckets[0], 1);
+}
+
+TEST(ComputeGoalStatsTest, ExtraTimeGoalsAreNotCounted) {
+    const std::vector matches = {matchOn(541, 93, kChampionsLeague, dayOf(2026, 9, 30))};
+    const std::vector goals = {
+        goalIn(matches[0], idRealMadrid, model::Period::ExtraTimeFirstHalf, seconds{5700})};
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid}};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.matchCount, 1);
+    EXPECT_EQ(result.buckets, (std::array{0, 0, 0, 0, 0, 0}));
+    EXPECT_EQ(result.halves, (std::array{0, 0}));
+}
+
+TEST(ComputeGoalStatsTest, ScorerFilterKeepsOnlyThatPlayersGoals) {
+    const std::vector matches = {matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20))};
+    const std::vector goals = {
+        goalIn(matches[0], idRealMadrid, model::Period::FirstHalf, seconds{536}, kBellingham),
+        goalIn(matches[0], idRealMadrid, model::Period::SecondHalf, seconds{5300}, kGuler),
+        goalIn(matches[0], idRealMadrid, model::Period::SecondHalf, seconds{5390}), // no scorer
+    };
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid}, .scorer = kGuler};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.buckets, (std::array{0, 0, 0, 0, 0, 1}));
+}
+
+TEST(ComputeGoalStatsTest, LastNLimitsMatchesAndTheirGoals) {
+    const std::vector matches = {
+        matchOn(541, 93, kLaLiga, dayOf(2026, 8, 16)),
+        matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20)),
+    };
+    const std::vector goals = {
+        goalIn(matches[0], idRealMadrid, model::Period::FirstHalf, seconds{536}), // older match
+        goalIn(matches[1], idRealMadrid, model::Period::SecondHalf, seconds{5300}),
+    };
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid, .lastN = 1}};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.matchCount, 1);
+    EXPECT_EQ(result.buckets, (std::array{0, 0, 0, 0, 0, 1}));
+}
+
+TEST(ComputeGoalStatsTest, GoallessMatchesStillCountInMatchCount) {
+    const std::vector matches = {
+        matchOn(541, 93, kLaLiga, dayOf(2026, 8, 16)),
+        matchOn(541, 93, kLaLiga, dayOf(2026, 9, 20)),
+    };
+    const std::vector goals = {
+        goalIn(matches[1], idRealMadrid, model::Period::FirstHalf, seconds{536})};
+    const stats::GoalsByMinuteQuery query{.matches = {.team = idRealMadrid}};
+
+    const auto result = stats::computeGoalStats(query, matches, goals);
+
+    EXPECT_EQ(result.matchCount, 2);
 }
