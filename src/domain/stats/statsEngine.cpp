@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <functional>
 #include <ranges>
+#include <vector>
 
 #include <chrono>
 
@@ -59,6 +60,41 @@ std::optional<int> bucketOf(const model::GoalEvent& goal) {
     }
 
     return std::nullopt;
+}
+
+bool matchesQuery(const model::Match& match, const MatchFilter& filter) {
+    if (match.status() != model::MatchStatus::Finished) {
+        return false;
+    }
+
+    if (filter.competition.has_value() && match.competition() != *filter.competition) {
+        return false;
+    }
+
+    switch (filter.venue) {
+    case Venue::Home:
+        if (match.homeTeam().id != filter.team) {
+            return false;
+        }
+        break;
+    case Venue::Away:
+        if (match.awayTeam().id != filter.team) {
+            return false;
+        }
+        break;
+    case Venue::All:
+        if (match.homeTeam().id != filter.team && match.awayTeam().id != filter.team) {
+            return false;
+        }
+        break;
+    }
+
+    if (!filter.seasons.empty() &&
+        !std::ranges::contains(filter.seasons, model::seasonOf(match.kickoff()))) {
+        return false;
+    }
+
+    return true;
 }
 
 }}} // namespace madridista::domain::stats
