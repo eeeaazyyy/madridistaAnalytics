@@ -6,6 +6,7 @@
 #include "domain/stats/statsQuery.hpp"
 
 #include <span>
+#include <vector>
 
 namespace madridista { namespace domain { namespace stats {
 
@@ -14,6 +15,9 @@ namespace madridista { namespace domain { namespace stats {
 [[nodiscard]] std::optional<int> bucketOf(const model::GoalEvent& goal);
 
 [[nodiscard]] bool matchesQuery(const model::Match& match, const MatchFilter& filter);
+
+[[nodiscard]] std::vector<model::MatchId> selectMatches(const MatchFilter& filter,
+                                                        std::span<const model::Match> matches);
 
 }}} // namespace madridista::domain::stats
 
