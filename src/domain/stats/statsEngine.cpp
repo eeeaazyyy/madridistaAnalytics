@@ -5,14 +5,14 @@
 #include <cstddef>
 #include <functional>
 #include <ranges>
+#include <set>
 #include <vector>
 
 namespace madridista { namespace domain { namespace stats {
 
 namespace {
 
-inline constexpr int kBucketMinutes = 15;
-inline constexpr int kRegularTimeBuckets = 6;
+constexpr int kBucketMinutes = 15;
 
 constexpr int kFirstHalfFirstBucket = 0;
 constexpr int kFirstHalfLastBucket = 2;
@@ -32,6 +32,23 @@ constexpr int kSecondHalfLastBucket = 5;
     }
 
     return 0;
+}
+
+bool countsForQuery(const model::GoalEvent& goal, const GoalsByMinuteQuery& query) {
+    const bool byTeam = goal.team == query.matches.team;
+    if (query.metric == Metric::GoalsScored && !byTeam) {
+        return false;
+    }
+
+    if (query.metric == Metric::GoalsConceded && byTeam) {
+        return false;
+    }
+
+    if (query.scorer && (!goal.scorer || goal.scorer->id != *query.scorer)) {
+        return false;
+    }
+
+    return true;
 }
 
 } // namespace
@@ -122,6 +139,31 @@ std::vector<model::MatchId> selectMatches(const MatchFilter& filter,
     }
 
     return ids;
+}
+
+StatsResult computeGoalStats(const GoalsByMinuteQuery& query, std::span<const model::Match> matches,
+                             std::span<const model::GoalEvent> goals) {
+    const auto ids = selectMatches(query.matches, matches);
+
+    const std::set<model::MatchId> selected(ids.begin(), ids.end());
+
+    StatsResult result{.matchCount = static_cast<int>(ids.size())};
+
+    for (const model::GoalEvent& goal : goals) {
+        if (!selected.contains(goal.match) || !countsForQuery(goal, query)) {
+            continue;
+        }
+
+        const auto bucket = bucketOf(goal);
+        if (!bucket) {
+            continue;
+        }
+
+        result.buckets[static_cast<std::size_t>(*bucket)] += 1;
+        result.halves[goal.period == model::Period::FirstHalf ? 0 : 1] += 1;
+    }
+
+    return result;
 }
 
 }}} // namespace madridista::domain::stats
