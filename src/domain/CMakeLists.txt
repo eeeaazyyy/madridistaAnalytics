@@ -2,7 +2,8 @@ set(HEADERS
         model/match.hpp
         model/goalEvent.hpp
         model/season.hpp
-        stats/statsEngine.hpp)
+        stats/statsEngine.hpp
+        stats/statsQuery.hpp)
 
 set(SOURCES
         model/match.cpp

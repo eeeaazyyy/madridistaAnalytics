@@ -151,3 +151,77 @@ TEST(BucketOfTest, BucketIsAlwaysInsideRegularTimeRange) {
         EXPECT_LT(*bucket, kRegularTimeBuckets);
     }
 }
+
+namespace {
+
+constexpr model::CompetitionId kLaLiga{140};
+constexpr model::CompetitionId kChampionsLeague{2};
+
+// Finished 1:0 match with explicit competition and kickoff date
+model::Match matchOn(std::int64_t homeId, std::int64_t awayId, model::CompetitionId competition,
+                     std::chrono::sys_days day) {
+    static std::int64_t nextId = 1000;
+    return model::Match::create({
+                                    .id = model::MatchId{nextId++},
+                                    .kickoff = day,
+                                    .competition = competition,
+                                    .homeTeam = model::Team{model::TeamId{homeId}, ""},
+                                    .awayTeam = model::Team{model::TeamId{awayId}, ""},
+                                    .status = model::MatchStatus::Finished,
+                                    .score = model::Score{1, 0},
+                                })
+        .value();
+}
+
+constexpr std::chrono::sys_days kSeptember2026 =
+    std::chrono::sys_days{std::chrono::year{2026} / 9 / 20};
+
+} // namespace
+
+TEST(MatchesQueryTest, EmptyFilterAcceptsAnyFinishedMatchOfTheTeam) {
+    const stats::MatchFilter filter{.team = idRealMadrid};
+
+    EXPECT_TRUE(stats::matchesQuery(matchOn(541, 798, kLaLiga, kSeptember2026), filter));
+    EXPECT_TRUE(stats::matchesQuery(matchOn(529, 541, kChampionsLeague, kSeptember2026), filter));
+}
+
+TEST(MatchesQueryTest, RejectsMatchThatIsNotFinished) {
+    const stats::MatchFilter filter{.team = idRealMadrid};
+
+    EXPECT_FALSE(stats::matchesQuery(scheduledMatch(541, 798), filter));
+}
+
+TEST(MatchesQueryTest, RejectsMatchOfOtherTeams) {
+    const stats::MatchFilter filter{.team = idRealMadrid};
+
+    EXPECT_FALSE(stats::matchesQuery(matchOn(529, 530, kLaLiga, kSeptember2026), filter));
+}
+
+TEST(MatchesQueryTest, HomeVenueAcceptsOnlyHomeMatches) {
+    const stats::MatchFilter filter{.team = idRealMadrid, .venue = stats::Venue::Home};
+
+    EXPECT_TRUE(stats::matchesQuery(matchOn(541, 798, kLaLiga, kSeptember2026), filter));
+    EXPECT_FALSE(stats::matchesQuery(matchOn(798, 541, kLaLiga, kSeptember2026), filter));
+}
+
+TEST(MatchesQueryTest, AwayVenueAcceptsOnlyAwayMatches) {
+    const stats::MatchFilter filter{.team = idRealMadrid, .venue = stats::Venue::Away};
+
+    EXPECT_TRUE(stats::matchesQuery(matchOn(798, 541, kLaLiga, kSeptember2026), filter));
+    EXPECT_FALSE(stats::matchesQuery(matchOn(541, 798, kLaLiga, kSeptember2026), filter));
+}
+
+TEST(MatchesQueryTest, CompetitionFilterRejectsOtherCompetitions) {
+    const stats::MatchFilter filter{.team = idRealMadrid, .competition = kChampionsLeague};
+
+    EXPECT_TRUE(stats::matchesQuery(matchOn(541, 798, kChampionsLeague, kSeptember2026), filter));
+    EXPECT_FALSE(stats::matchesQuery(matchOn(541, 798, kLaLiga, kSeptember2026), filter));
+}
+
+TEST(MatchesQueryTest, SeasonFilterAcceptsOnlyListedSeasons) {
+    const stats::MatchFilter filter{.team = idRealMadrid, .seasons = {model::Season{2026}}};
+    const auto march2026 = std::chrono::sys_days{std::chrono::year{2026} / 3 / 14}; // season 2025
+
+    EXPECT_TRUE(stats::matchesQuery(matchOn(541, 798, kLaLiga, kSeptember2026), filter));
+    EXPECT_FALSE(stats::matchesQuery(matchOn(541, 798, kLaLiga, march2026), filter));
+}
