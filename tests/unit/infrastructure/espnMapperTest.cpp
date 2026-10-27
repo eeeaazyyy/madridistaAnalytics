@@ -33,10 +33,10 @@ TEST(EspnScheduleTest, ParsesFinishedMatches) {
     ASSERT_EQ(matches->size(), 3u);
 
     const auto& first = matches->front();
-    EXPECT_EQ(first.id().value, 401882865);
-    EXPECT_EQ(first.homeTeam().id.value, 1068);
+    EXPECT_EQ(first.id().value(), 401882865);
+    EXPECT_EQ(first.homeTeam().id.value(), 1068);
     EXPECT_EQ(first.homeTeam().name, "Atlético Madrid");
-    EXPECT_EQ(first.awayTeam().id.value, 86);
+    EXPECT_EQ(first.awayTeam().id.value(), 86);
     EXPECT_EQ(first.status(), domain::model::MatchStatus::Finished);
     EXPECT_EQ(first.competition(), kLaLiga);
     ASSERT_TRUE(first.score().has_value());
@@ -114,7 +114,7 @@ TEST(EspnSummaryTest, ParsesAllGoalsOfTheMatch) {
     ASSERT_TRUE(goals.has_value());
     ASSERT_EQ(goals->size(), 6u);
     for (const auto& goal : *goals) {
-        EXPECT_EQ(goal.match.value, 748514);
+        EXPECT_EQ(goal.match.value(), 748514);
     }
 }
 
@@ -128,7 +128,7 @@ TEST(EspnSummaryTest, RegularTimeGoalHasNoAddedTime) {
     EXPECT_EQ(first.period, domain::model::Period::FirstHalf);
     EXPECT_EQ(first.clock, seconds{715});
     EXPECT_EQ(first.addedTime, minutes{0});
-    EXPECT_EQ(first.team.value, 86);
+    EXPECT_EQ(first.team.value(), 86);
 }
 
 TEST(EspnSummaryTest, ParsesFirstHalfStoppageTimeGoal) {
@@ -141,7 +141,7 @@ TEST(EspnSummaryTest, ParsesFirstHalfStoppageTimeGoal) {
     EXPECT_EQ(goal.period, domain::model::Period::FirstHalf);
     EXPECT_EQ(goal.clock, seconds{2700});
     EXPECT_EQ(goal.addedTime, minutes{1});
-    EXPECT_EQ(goal.team.value, 93);
+    EXPECT_EQ(goal.team.value(), 93);
 }
 
 TEST(EspnSummaryTest, ParsesSecondHalfStoppageTimeGoal) {
@@ -174,7 +174,7 @@ TEST(EspnSummaryTest, OwnGoalIsCreditedToBenefitingTeam) {
     ASSERT_EQ(goals->size(), 5u);
     const auto& ownGoal = (*goals)[3]; // 85', scored by a Real Madrid player
     EXPECT_EQ(ownGoal.type, domain::model::GoalType::OwnGoal);
-    EXPECT_EQ(ownGoal.team.value, 3751); // Elche
+    EXPECT_EQ(ownGoal.team.value(), 3751); // Elche
 }
 
 TEST(EspnSummaryTest, RecognizesPenalties) {

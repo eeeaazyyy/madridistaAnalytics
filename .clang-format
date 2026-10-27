@@ -5,3 +5,5 @@ PointerAlignment: Left
 AllowShortFunctionsOnASingleLine: Inline
 CompactNamespaces: true
 AllowShortEnumsOnASingleLine: false
+BreakTemplateDeclarations: Yes
+AccessModifierOffset: -4

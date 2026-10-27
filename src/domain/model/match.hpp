@@ -2,6 +2,7 @@
 #define ijuhfbnahdsi81348912E_sdfyu438asdan
 
 #include "domain/error.hpp"
+#include "domain/model/id.hpp"
 
 #include <chrono>
 #include <compare>
@@ -18,21 +19,6 @@ enum class MatchStatus {
     Finished,
     Postponed,
     Cancelled
-};
-
-struct TeamId {
-    std::int64_t value{};
-    auto operator<=>(const TeamId&) const = default;
-};
-
-struct MatchId {
-    std::int64_t value{};
-    auto operator<=>(const MatchId&) const = default;
-};
-
-struct CompetitionId {
-    std::int64_t value{};
-    auto operator<=>(const CompetitionId&) const = default;
 };
 
 struct Team {
@@ -68,12 +54,12 @@ public:
     MatchId id() const;
     std::chrono::sys_seconds kickoff() const;
     CompetitionId competition() const;
-    const Team &homeTeam() const;
-    const Team &awayTeam() const;
+    const Team& homeTeam() const;
+    const Team& awayTeam() const;
 
     MatchStatus status() const;
 
-    const std::optional<Score> &score() const;
+    const std::optional<Score>& score() const;
 
     bool operator==(const Match&) const = default;
 
@@ -83,6 +69,6 @@ private:
     MatchData data_;
 };
 
-}}}
+}}} // namespace madridista::domain::model
 
 #endif

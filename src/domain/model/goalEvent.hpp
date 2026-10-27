@@ -20,11 +20,6 @@ enum class GoalType {
     OwnGoal,
 };
 
-struct PlayerId {
-    std::int64_t value{};
-    auto operator<=>(const PlayerId&) const = default;
-};
-
 struct Player {
     PlayerId id;
     std::string name;
