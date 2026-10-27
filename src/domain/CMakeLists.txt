@@ -1,6 +1,7 @@
 set(HEADERS 
         model/match.hpp
         model/goalEvent.hpp
+        model/id.hpp
         model/season.hpp
         stats/statsEngine.hpp
         stats/statsQuery.hpp)
