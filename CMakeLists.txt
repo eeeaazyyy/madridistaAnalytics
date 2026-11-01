@@ -9,7 +9,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(CompilerWarnings)
 
-find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt6 6.8 REQUIRED COMPONENTS Core Gui Widgets Sql)
 qt_standard_project_setup()
 
 add_subdirectory(src)

@@ -39,5 +39,15 @@ target_compile_definitions(infrastructure_tests PRIVATE
     FIXTURES_DIR="${PROJECT_SOURCE_DIR}/tests/fixtures")
 
 madridista_set_warnings(infrastructure_tests)
-
 gtest_discover_tests(infrastructure_tests)
+
+#persistence_tests
+add_executable(persistence_tests
+    unit/infrastructure/persistenceTestMain.cpp
+    unit/infrastructure/migrationsTest.cpp)
+
+target_link_libraries(persistence_tests PRIVATE infrastructure
+                                        GTest::gtest)
+
+madridista_set_warnings(persistence_tests)
+gtest_discover_tests(persistence_tests)
