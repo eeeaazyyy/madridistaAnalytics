@@ -6,9 +6,10 @@
 namespace madridista { namespace domain {
 
 enum class ErrorCode {
-    InvalidArgument = -1,
-    InvalidResponse = -2,
-    NotFound = -3,
+    InvalidArgument,
+    InvalidResponse,
+    NotFound,
+    Storage,
 };
 
 struct Error {
