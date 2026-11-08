@@ -1,9 +1,11 @@
 set(HEADERS 
         espn/espnMapper.hpp
+        persistence/database.hpp
         persistence/migrations.hpp)
 
 set(SOURCES
         espn/espnMapper.cpp
+        persistence/database.cpp
         persistence/migrations.cpp)
 
 add_library(infrastructure STATIC ${SOURCES} ${HEADERS})
@@ -15,5 +17,5 @@ qt_add_resources(infrastructure migrations
         ${PROJECT_SOURCE_DIR}/sql/migrations/001_initial_schema.sql)
 
 target_include_directories(infrastructure PUBLIC ${PROJECT_SOURCE_DIR}/src)
-target_link_libraries(infrastructure PUBLIC domain Qt6::Core Qt6::Sql)
+target_link_libraries(infrastructure PUBLIC application domain Qt6::Core Qt6::Sql)
 madridista_set_warnings(infrastructure)
